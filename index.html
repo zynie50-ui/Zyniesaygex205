@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZYNIESAYGEX🍊🌈 - Liquid Glass Hub</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: #06020c;
+      color: #f3e8ff;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100vh;
+      z-index: 10;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+    }
+
+    /* LỚP 1: MẸ CAM 🍊🌈 */
+    #intro-screen {
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #2e1065 0%, #06020c 90%);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .intro-box {
+      background: rgba(45, 20, 75, 0.6);
+      border: 1px solid rgba(216, 180, 254, 0.4);
+      border-radius: 24px;
+      padding: 35px 25px;
+      max-width: 520px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 0 20px rgba(192, 132, 252, 0.2);
+    }
+
+    .intro-title {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #f0abfc;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px rgba(240, 171, 252, 0.6);
+    }
+
+    .intro-subtitle {
+      font-size: 0.95rem;
+      color: #d8b4fe;
+      margin-bottom: 25px;
+    }
+
+    .intro-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-choice {
+      background: rgba(126, 34, 206, 0.3);
+      border: 1px solid rgba(192, 132, 252, 0.5);
+      border-radius: 14px;
+      padding: 14px 18px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s;
+    }
+
+    .btn-choice:hover {
+      background: rgba(168, 85, 247, 0.5);
+      border-color: #f0abfc;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
+    }
+
+    /* LỚP 2: HUB CHÍNH */
+    header {
+      background: rgba(15, 7, 26, 0.8);
+      border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+      backdrop-filter: blur(15px);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #f0abfc;
+      letter-spacing: 2px;
+    }
+
+    .main-container {
+      padding: 30px 20px 80px;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .filter-section {
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(25, 12, 45, 0.6);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      outline: none;
+      font-size: 0.95rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-input:focus {
+      border-color: #f0abfc;
+      box-shadow: 0 0 12px rgba(240, 171, 252, 0.4);
+    }
+
+    .category-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      scrollbar-width: none;
+    }
+
+    .category-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      background: rgba(126, 34, 206, 0.2);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      color: #e9d5ff;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      backdrop-filter: blur(5px);
+      transition: all 0.2s;
+    }
+
+    .chip.active, .chip:hover {
+      background: rgba(168, 85, 247, 0.5);
+      color: #fff;
+      border-color: #f0abfc;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    }
+
+    .category-group {
+      margin-bottom: 35px;
+    }
+
+    .category-title {
+      font-size: 1.3rem;
+      color: #f0abfc;
+      margin-bottom: 15px;
+      border-left: 4px solid #c084fc;
+      padding-left: 10px;
+      text-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    /* 🌊 LIQUID GLASS / WATER RIPPLE CARD STYLE */
+    .glass-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(88, 28, 135, 0.22) 100%);
+      border: 1px solid rgba(216, 180, 254, 0.35);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(216, 180, 254, 0.15);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(240, 171, 252, 0.8);
+      box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4), inset 0 0 25px rgba(240, 171, 252, 0.3);
+    }
+
+    /* Hiệu ứng sáng lên khi Toro chỉ búa vào */
+    .glass-card.toro-active {
+      border-color: #f0abfc !important;
+      box-shadow: 0 0 35px rgba(240, 171, 252, 0.8), inset 0 0 30px rgba(240, 171, 252, 0.5) !important;
+      transform: scale(1.02);
+    }
+
+    /* Gợn sóng nước bên trong khung (Water Ripple Layer) */
+    .water-ripple {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(216, 180, 254, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      animation: waterWave 6s infinite alternate ease-in-out;
+    }
+
+    .glass-card.toro-active .water-ripple {
+      animation: waterWaveFast 1.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes waterWave {
+      0% { transform: scale(1) translateY(0); opacity: 0.6; }
+      50% { transform: scale(1.08) translateY(-3px); opacity: 0.9; }
+      100% { transform: scale(1) translateY(0); opacity: 0.6; }
+    }
+
+    @keyframes waterWaveFast {
+      0% { transform: scale(0.95) translateY(-4px); opacity: 1; }
+      100% { transform: scale(1.15) translateY(4px); opacity: 1; }
+    }
+
+    /* Hiệu ứng bong bóng nhỏ nổi bên trong */
+    .bubble {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: riseBubble 4s infinite linear;
+    }
+
+    @keyframes riseBubble {
+      0% { transform: translateY(120px) scale(0.5); opacity: 0; }
+      50% { opacity: 0.6; }
+      100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
+    }
+
+    /* Hiệu ứng gợn sóng lan tỏa khi chạm (Click Ripple Effect) */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: clickRipple 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes clickRipple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* AVATAR TRÒN CÓ SỪNG TRÂU */
+    .avatar-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin-bottom: 12px;
+      margin-top: 8px;
+      z-index: 2;
+    }
+
+    .avatar-container::before {
+      content: '🦬';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.8rem;
+      z-index: 5;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      animation: wiggleHorns 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes wiggleHorns {
+      0% { transform: translateX(-50%) rotate(-3deg); }
+      100% { transform: translateX(-50%) rotate(3deg); }
+    }
+
+    .avatar-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f0abfc;
+      box-shadow: 0 0 15px rgba(240, 171, 252, 0.6);
+      background-color: #120722;
+    }
+
+    .card-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fae8ff;
+      margin-bottom: 4px;
+      z-index: 2;
+    }
+
+    .card-tag {
+      background: rgba(126, 34, 206, 0.4);
+      color: #d8b4fe;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .chat-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #7e22ce, #a855f7);
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      z-index: 2;
+      transition: opacity 0.2s;
+    }
+
+    .chat-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* TORO SPEECH BUBBLE */
+    #toro-bubble {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.96);
+      color: #2e1065;
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      z-index: 200;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      display: none;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bgCanvas" class="bg-canvas"></canvas>
+  <canvas id="mascotCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:50; pointer-events:none;"></canvas>
+  <div id="toro-bubble">Toro đang kiểm tra mặt nước! 🔨⚡</div>
+
+  <!-- LỚP 1: MẸ CAM 🍊🌈 -->
+  <div id="intro-screen" class="screen active">
+    <div class="intro-box">
+      <div style="font-size: 2.2rem; margin-bottom: 10px;">🍊🌈</div>
+      <h1 class="intro-title">MẸ CAM HỎI THẬT</h1>
+      <p class="intro-subtitle">Tôi biết tôi đẹp mà ok? Hôm nay có áp lực gì, vào đây hành mấy thằng cặc bự này cho mẹ xả stress nhaaaa🦭?</p>
+      
+      <div class="intro-choices">
+        <button class="btn-choice" onclick="enterHub()">🍊 A. Ngụy Côn Trùng. " Yêu một người là không sai, Yêu một người không nên yêu cũng không sai, nhưng yêu một người mà bất chấp tất cả…là sai! “</button>
+        <button class="btn-choice" onclick="enterHub()">🌈 B. Câu A mẹ nhảm lồn đó đừng để ý🙂 " </button>
+        <button class="btn-choice" onclick="enterHub()">👁️👄👁️C. Nhớ tới thân già này rồi đúng không? Hay nhớ chồng…hay muốn trải nghiệm!? Trước khi vào phải đọc thần chú nha 😈“!</button>
+        <button class="btn-choice" onclick="enterHub()">👌🏻👈🏻💦D. Cốc Cốc Cốc, Mở cửa cho bé đê…để cho bé cưa nhá</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- LỚP 2: HUB CHÍNH -->
+  <div id="main-screen" class="screen">
+    <header>
+      <div class="logo">ZYNIESAYGEX HUB 🌈🍊</div>
+      <button class="chip" onclick="resetToIntro()" style="background: rgba(220, 38, 38, 0.3); border-color: #ef4444;">Quay lại Mẹ Cam</button>
+    </header>
+
+    <div class="main-container">
+      <div class="filter-section">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Tìm kiếm con cá chà bặc..." oninput="renderHub()">
+        
+        <div class="category-chips">
+          <div class="chip active" onclick="filterCategory('all', this)">Tất Cả</div>
+          <div class="chip" onclick="filterCategory('Ngụy Côn Trùng', this)">Ngụy Côn Trùng</div>
+          <div class="chip" onclick="filterCategory('Mafia', this)">Mafia</div>
+          <div class="chip" onclick="filterCategory('Chú Nuôi', this)">Chú Nuôi</div>
+          <div class="chip" onclick="filterCategory('Ngược', this)">Ngược</div>
+          <div class="chip" onclick="filterCategory('Ngọt', this)">Ngọt</div>
+          <div class="chip" onclick="filterCategory('Khó Chinh Phục', this)">Khó Chinh Phục</div>
+          <div class="chip" onclick="filterCategory('Miền Tây', this)">Miền Tây</div>
+          <div class="chip" onclick="filterCategory('Hồng Hài Nhi', this)">Hồng Hài Nhi</div>
+          <div class="chip" onclick="filterCategory('Boy Love/Boy Girl', this)">Boy Love/Boy Girl</div>
+        </div>
+      </div>
+
+      <div id="hub-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const categories = [
+      "Ngụy Côn Trùng", "Mafia", "Chú Nuôi", "Ngược", 
+      "Ngọt", "Khó Chinh Phục", "Miền Tây", "Hồng Hài Nhi", "Boy Love/Boy Girl"
+    ];
+
+    let characters = [
+      {
+        id: '1',
+        name: 'Gia trưởng mới lo được cho em',
+        category: 'Mafia',
+        img: 'https://i.postimg.cc/DSWKWvp2/file-0000000005408211b748a4ab2fe8573a.png',
+        chatLink: '#'
+      },
+      {
+        id: '2',
+        name: 'Chồng yêu chồng chiều',
+        category: 'Ngọt',
+        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
+        chatLink: '#'
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function enterHub() {
+      document.getElementById('intro-screen').classList.remove('active');
+      document.getElementById('intro-screen').style.display = 'none';
+      
+      const main = document.getElementById('main-screen');
+      main.style.display = 'flex';
+      setTimeout(() => main.classList.add('active'), 10);
+      renderHub();
+    }
+
+    function resetToIntro() {
+      document.getElementById('main-screen').classList.remove('active');
+      document.getElementById('main-screen').style.display = 'none';
+      
+      const intro = document.getElementById('intro-screen');
+      intro.style.display = 'flex';
+      setTimeout(() => intro.classList.add('active'), 10);
+    }
+
+    function filterCategory(cat, element) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      element.classList.add('active');
+      currentCategory = cat;
+      renderHub();
+    }
+
+    // Hiệu ứng khi chạm vào thẻ: gợn sóng lan tỏa như giọt nước rơi
+    function createRipple(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple-effect');
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      card.appendChild(ripple);
+
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    function renderHub() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase();
+      const container = document.getElementById('hub-content');
+      
+      let filteredCats = currentCategory === 'all' ? categories : [currentCategory];
+      let html = '';
+
+      filteredCats.forEach(cat => {
+        let charList = characters.filter(c => c.category === cat && c.name.toLowerCase().includes(keyword));
+        
+        if (charList.length > 0 || currentCategory !== 'all') {
+          html += `
+            <div class="category-group">
+              <div class="category-title">📂 ${cat}</div>
+              <div class="card-grid">
+          `;
+
+          if (charList.length > 0) {
+            html += charList.map(c => `
+              <div class="glass-card" onclick="createRipple(event)" id="card-${c.id}">
+                <div class="water-ripple"></div>
+                <!-- Bong bóng nước nhỏ nổi lên -->
+                <div class="bubble" style="left: 20%; width: 6px; height: 6px; animation-delay: 0s;"></div>
+                <div class="bubble" style="left: 60%; width: 8px; height: 8px; animation-delay: 1.5s;"></div>
+                <div class="bubble" style="left: 80%; width: 5px; height: 5px; animation-delay: 2.8s;"></div>
+
+                <div class="avatar-container">
+                  <img src="${c.img}" class="avatar-circle" alt="${c.name}">
+                </div>
+                <div class="card-name">${c.name}</div>
+                <div class="card-tag">${c.category}</div>
+                <a href="${c.chatLink}" target="_blank" class="chat-btn" onclick="event.stopPropagation()">Vào Trò Chuyện ➔</a>
+              </div>
+            `).join('');
+          } else {
+            html += `<p style="color: #9ca3af; font-size: 0.85rem; font-style: italic; grid-column: 1/-1;">Chưa có nhân vật nào trong chủ đề này...</p>`;
+          }
+
+          html += `</div></div>`;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
+    // 🐾 HỆ THỐNG MASCOT TORO & HIỆU ỨNG BÚA GÕ
+    const bgCanvas = document.getElementById('bgCanvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    const mascotCanvas = document.getElementById('mascotCanvas');
+    const ctx = mascotCanvas.getContext('2d');
+
+    function resizeCanvas() {
+      bgCanvas.width = mascotCanvas.width = window.innerWidth;
+      bgCanvas.height = mascotCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Background particles
+    const particles = Array.from({length: 40}, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      radius: Math.random() * 2 + 1,
+      speed: Math.random() * 0.3 + 0.1,
+      alpha: Math.random()
+    }));
+
+    function drawBg() {
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      particles.forEach(p => {
+        p.y -= p.speed;
+        if(p.y < 0) p.y = bgCanvas.height;
+        bgCtx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
+        bgCtx.beginPath();
+        bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        bgCtx.fill();
+      });
+      requestAnimationFrame(drawBg);
+    }
+    drawBg();
+
+    let toro = { x: 100, y: window.innerHeight - 120, dx: 1.5, direction: 1, breath: 0 };
+    let activeCardId = null;
+
+    function drawToro() {
+      ctx.clearRect(0, 0, mascotCanvas.width, mascotCanvas.height);
+      
+      // Chỉ chạy linh vật Toro khi đang ở Lớp 2 (Hub chính)
+      if (document.getElementById('main-screen').classList.contains('active')) {
+        toro.breath += 0.05;
+        toro.x += toro.dx * toro.direction;
+        if(toro.x > mascotCanvas.width - 100 || toro.x < 50) toro.direction *= -1;
+
+        ctx.save();
+        ctx.translate(toro.x, toro.y + Math.sin(toro.breath) * 2);
+        if(toro.direction === -1) ctx.scale(-1, 1);
+
+        // Toro Body
+        ctx.fillStyle = '#581c87';
+        ctx.beginPath(); ctx.arc(0, 0, 32, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2; ctx.stroke();
+
+        // Horns
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(-15, -24); ctx.lineTo(-32, -48); ctx.lineTo(-5, -30);
+        ctx.moveTo(15, -24); ctx.lineTo(32, -48); ctx.lineTo(5, -30);
+        ctx.fill();
+
+        // Hammer
+        ctx.fillStyle = '#9333ea'; ctx.fillRect(20, -38, 28, 20);
+        ctx.fillStyle = '#3b0764'; ctx.fillRect(32, -18, 5, 38);
+
+        ctx.restore();
+
+        // Kiểm tra vị trí Toro gần thẻ nào để kích hoạt hiệu ứng búa gõ
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach((card, idx) => {
+          const rect = card.getBoundingClientRect();
+          if (Math.abs(toro.x - (rect.left + rect.width/2)) < 80) {
+            card.classList.add('toro-active');
+          } else {
+            card.classList.remove('toro-active');
+          }
+        });
+      }
+
+      requestAnimationFrame(drawToro);
+    }
+    drawToro();
+  </script>
+</body>
+</html>
